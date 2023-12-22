@@ -5,8 +5,23 @@ import random
 from PyQt5 import uic, QtGui
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QImage, QColor, QTransform
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QSlider
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 from PIL import Image, ImageFilter, ImageEnhance
+from pillow_lut import load_cube_file
+
+
+class First(QMainWindow):
+    def __init__(self):
+        super(First, self).__init__()
+
+        uic.loadUi('YL_1.1.ui', self)
+
+        self.StartButton.clicked.connect(self.start)
+
+    def start(self):
+        self.ex = Photoshop()
+        self.ex.show()
+        self.close()
 
 
 class Photoshop(QMainWindow):
@@ -15,14 +30,27 @@ class Photoshop(QMainWindow):
 
         uic.loadUi('YL_1.ui', self)
 
-        self.filename = QFileDialog.getOpenFileName(
-            self, 'Выберите картинку', '',
-            'Картинка (*.jpg);;Картинка (*.png);;Все файлы (*)')[0]
+        while True:
+            self.filename = QFileDialog.getOpenFileName(
+                self, 'Выберите картинку', '',
+                'Картинка (*.jpg);;Картинка (*.png);;Все файлы (*)')[0]
+            if not self.filename:
+                error = QMessageBox()
+                error.setWindowTitle('Ошибка')
+                error.setText('Нашмите "Cancel", если хотите выйти. Иначе нажмите "Ok" и выберите картинку.')
+                error.setIcon(QMessageBox.Warning)
+                error.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+                returned = error.exec_()
+                if returned == QMessageBox.Cancel:
+                    end()
+                    break
+            else:
+                break
 
         con = sqlite3.connect('YLdb_1.db')
         cursor = con.cursor()
         cursor.execute('''INSERT INTO ColorSliders VALUES (0, 0, 'red'), (0, 0, 'green'), (0, 0, 'blue'),
-                          (0, 0, 'rotate')''')
+                          (0, 0, 'rotate'), (0, 0.05, 'contrast')''')
         con.commit()
         con.close()
 
@@ -49,7 +77,6 @@ class Photoshop(QMainWindow):
         self.Back.clicked.connect(self.cancel_all)
         self.ClockwiseRotation.clicked.connect(self.right_rotate)
         self.CounterclockwiseRotation.clicked.connect(self.left_rotate)
-        self.DegreeChanger.valueChanged.connect(self.rotate)
         self.VisibilitySlider.valueChanged.connect(self.visibility)
         self.Sharpness.clicked.connect(self.make_sharper)
         self.Smoothing.clicked.connect(self.make_smoother)
@@ -59,19 +86,163 @@ class Photoshop(QMainWindow):
         self.Fading.clicked.connect(self.fading)
         self.Contrast.clicked.connect(self.contrast)
         self.Random.clicked.connect(self.random)
+        self.Contour.clicked.connect(self.contour)
+        self.Nostalgia.clicked.connect(self.nostalgia)
+        self.Aqua.clicked.connect(self.aqua)
+        self.Cold.clicked.connect(self.cold)
+        self.NightCity.clicked.connect(self.night_city)
+        self.Glow.clicked.connect(self.glow)
+        self.Save.clicked.connect(self.save_all)
+        self.Sunrise.clicked.connect(self.sunrise)
+        self.Summer.clicked.connect(self.summer)
+        self.Autumn.clicked.connect(self.autumn)
+        self.Forest.clicked.connect(self.forest)
 
-    #  ДОРАБОТАТЬ (добавить остальные функции)
+    def sunrise(self):  # добавляет фильтр "рассвет"
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        lut = load_cube_file('sunrise.cube')
+        img = Image.open('img.png').filter(lut)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
+    def summer(self):  # добавляет фильтр "лето"
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        lut = load_cube_file('summer.cube')
+        img = Image.open('img.png').filter(lut)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
+    def autumn(self):  # добавляет фильтр "осень"
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        lut = load_cube_file('autumn.cube')
+        img = Image.open('img.png').filter(lut)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
+    def forest(self):  # добавляет фильтр "лес"
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        lut = load_cube_file('forest.cube')
+        img = Image.open('img.png').filter(lut)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
+    def glow(self):  # добавляет фильтр "сияние"
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        lut = load_cube_file('glow.cube')
+        img = Image.open('img.png').filter(lut)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
+    def night_city(self):  # добавляет фильтр "ночной город"
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        lut = load_cube_file('night_city.cube')
+        img = Image.open('img.png').filter(lut)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
+    def cold(self):  # добавляет фильтр "зима"
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        lut = load_cube_file('cold.cube')
+        img = Image.open('img.png').filter(lut)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
+    def aqua(self):  # добавляет фильтр "на берегу"
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        lut = load_cube_file('aqua.cube')
+        img = Image.open('img.png').filter(lut)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
+    def nostalgia(self):  # добавляет фильтр "ностальгия"
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        lut = load_cube_file('nostalgia.cube')
+        img = Image.open('img.png').filter(lut)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
+    def contour(self):  # создает фотографию с контуром (получается похоже на раскраску)
+        self.last_images.append(self.curr_image.copy())
+
+        self.curr_image.save('img.png', "PNG", -1)
+        img = Image.open('img.png')
+        img = img.filter(ImageFilter.CONTOUR)
+        img.save('img.png')
+
+        self.curr_image = QImage('img.png')
+        self.pixmap = QPixmap.fromImage(self.curr_image)
+        self.picture1.setPixmap(self.pixmap)
+        self.picture2.setPixmap(self.pixmap)
+
     def random(self):   # применяет один рандомный фильтр
         self.last_images.append(self.curr_image.copy())
 
         con = sqlite3.connect('YLdb_1.db')
         cursor = con.cursor()
-        n = random.randint(0, 5)
+        n, t, r = random.randint(0, 15), random.randint(0, 15), random.randint(0, 15)
         k = cursor.execute(f"""SELECT name FROM AllFunctions WHERE id = {n}""").fetchone()[0]
+        g = cursor.execute(f"""SELECT name FROM AllFunctions WHERE id = {t}""").fetchone()[0]
+        f = cursor.execute(f"""SELECT name FROM AllFunctions WHERE id = {r}""").fetchone()[0]
         con.commit()
         con.close()
 
         eval(k)()
+        eval(g)()
+        eval(f)()
 
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.picture1.setPixmap(self.pixmap)
@@ -84,9 +255,9 @@ class Photoshop(QMainWindow):
         img = Image.open('img.png')
         enhancer = ImageEnhance.Contrast(img)
         img = enhancer.enhance(1.05)
-        img.save('img2.png')
+        img.save('img.png')
 
-        self.curr_image = QImage('img2.png')
+        self.curr_image = QImage('img.png')
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.picture1.setPixmap(self.pixmap)
         self.picture2.setPixmap(self.pixmap)
@@ -98,9 +269,9 @@ class Photoshop(QMainWindow):
         img = Image.open('img.png')
         enhancer = ImageEnhance.Contrast(img)
         img = enhancer.enhance(0.95)
-        img.save('img2.png')
+        img.save('img.png')
 
-        self.curr_image = QImage('img2.png')
+        self.curr_image = QImage('img.png')
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.picture1.setPixmap(self.pixmap)
         self.picture2.setPixmap(self.pixmap)
@@ -112,9 +283,9 @@ class Photoshop(QMainWindow):
         img = Image.open('img.png')
         img = ImageEnhance.Brightness(img)
         img = img.enhance(0.95)
-        img.save('img2.png')
+        img.save('img.png')
 
-        self.curr_image = QImage('img2.png')
+        self.curr_image = QImage('img.png')
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.picture1.setPixmap(self.pixmap)
         self.picture2.setPixmap(self.pixmap)
@@ -126,32 +297,9 @@ class Photoshop(QMainWindow):
         img = Image.open('img.png')
         img = ImageEnhance.Brightness(img)
         img = img.enhance(1.05)
-        img.save('img2.png')
+        img.save('img.png')
 
-        self.curr_image = QImage('img2.png')
-        self.pixmap = QPixmap.fromImage(self.curr_image)
-        self.picture1.setPixmap(self.pixmap)
-        self.picture2.setPixmap(self.pixmap)
-
-    # ИСПРАВИТЬ ПРОБЛЕМСЫ (сместить повернутое фото в начало координат..?)
-    def rotate(self):  # поворачивает фото вправо на указанное количество градусов
-        self.last_images.append(self.curr_image.copy())
-
-        value = int(self.DegreeChanger.value())
-
-        con = sqlite3.connect('YLdb_1.db')
-        cursor = con.cursor()
-        m = cursor.execute("""SELECT id FROM ColorSliders WHERE color = 'rotate' ORDER BY id DESC LIMIT 1""").fetchone()
-        m = m[0]
-        cursor.execute(f"""INSERT INTO ColorSliders VALUES ({m + 1}, {value}, 'rotate')""")
-        n = cursor.execute(f"""SELECT value FROM ColorSliders WHERE color = 'rotate' AND id = {m}""").fetchone()
-        n = n[0]
-        k = value - n
-        con.commit()
-        con.close()
-
-        self.curr_image = self.curr_image.transformed(QTransform().rotate(k))
-
+        self.curr_image = QImage('img.png')
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.picture1.setPixmap(self.pixmap)
         self.picture2.setPixmap(self.pixmap)
@@ -190,7 +338,7 @@ class Photoshop(QMainWindow):
     def change_color_green(self):  # добавляет больше зеленого оттенка фотографии
         self.last_images.append(self.curr_image.copy())
 
-        value = int(self.RedSlider.value())
+        value = int(self.GreenSlider.value())
 
         con = sqlite3.connect('YLdb_1.db')
         cursor = con.cursor()
@@ -221,7 +369,7 @@ class Photoshop(QMainWindow):
     def change_color_blue(self):  # добавляет больше синего оттенка фотографии
         self.last_images.append(self.curr_image.copy())
 
-        value = int(self.RedSlider.value())
+        value = int(self.BlueSlider.value())
 
         x, y = self.curr_image.size().width(), self.curr_image.size().height()
 
@@ -254,11 +402,10 @@ class Photoshop(QMainWindow):
 
         self.curr_image.save('img.png', "PNG", -1)
         img = Image.open('img.png')
-        img = img.convert('L')
         img = img.filter(ImageFilter.FIND_EDGES)
-        img.save('img2.png')
+        img.save('img.png')
 
-        self.curr_image = QImage('img2.png')
+        self.curr_image = QImage('img.png')
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.picture1.setPixmap(self.pixmap)
         self.picture2.setPixmap(self.pixmap)
@@ -269,9 +416,9 @@ class Photoshop(QMainWindow):
         self.curr_image.save('img.png', "PNG", -1)
         img = Image.open('img.png')
         img = img.filter(ImageFilter.SHARPEN)
-        img.save('img2.png')
+        img.save('img.png')
 
-        self.curr_image = QImage('img2.png')
+        self.curr_image = QImage('img.png')
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.picture1.setPixmap(self.pixmap)
         self.picture2.setPixmap(self.pixmap)
@@ -282,9 +429,9 @@ class Photoshop(QMainWindow):
         self.curr_image.save('img.png', "PNG", -1)
         img = Image.open('img.png')
         img = img.filter(ImageFilter.SMOOTH)
-        img.save('img2.png')
+        img.save('img.png')
 
-        self.curr_image = QImage('img2.png')
+        self.curr_image = QImage('img.png')
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.picture1.setPixmap(self.pixmap)
         self.picture2.setPixmap(self.pixmap)
@@ -297,9 +444,9 @@ class Photoshop(QMainWindow):
         self.curr_image.save('img.png', "PNG", -1)
         img = Image.open('img.png')
         img.putalpha(v)
-        img.save('img2.png')
+        img.save('img.png')
 
-        self.curr_image = QImage('img2.png')
+        self.curr_image = QImage('img.png')
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.picture1.setPixmap(self.pixmap)
         self.picture2.setPixmap(self.pixmap)
@@ -333,11 +480,20 @@ class Photoshop(QMainWindow):
         self.picture2.setPixmap(self.pixmap)
 
     def go_one_step_back(self):  # эта функция отменяет последнее изменение
-        self.pixmap = QPixmap.fromImage(self.last_images[-1])
-        self.curr_image = self.last_images[-1].copy()
-        self.last_images = self.last_images[:-2]
-        self.picture1.setPixmap(self.pixmap)
-        self.picture2.setPixmap(self.pixmap)
+        try:
+            self.pixmap = QPixmap.fromImage(self.last_images[-1])
+            self.curr_image = self.last_images[-1].copy()
+            self.last_images = self.last_images[:-2]
+            self.picture1.setPixmap(self.pixmap)
+            self.picture2.setPixmap(self.pixmap)
+        except IndexError:
+            error = QMessageBox()
+            error.setWindowTitle('Ошибка')
+            error.setText('Это изначальное изображение.')
+            error.setInformativeText('Вы уже отменили все изменения.')
+            error.setIcon(QMessageBox.Warning)
+            error.setStandardButtons(QMessageBox.Ok)
+            error.exec_()
 
     def make_inversion(self):  # делает инверсию фотографии
         self.last_images.append(self.curr_image.copy())
@@ -403,6 +559,14 @@ class Photoshop(QMainWindow):
         self.picture1.setPixmap(self.pixmap)
         self.picture2.setPixmap(self.pixmap)
 
+    def save_all(self):  # сохраняет фото по указанному пути
+        option = QFileDialog.Options()
+        filename = QFileDialog.getSaveFileName(
+            self, 'Выберите путь', 'img',
+            'Картинка (*.jpg);;Картинка (*.png);;Все файлы (*)', options=option)
+        self.curr_image.save(filename[0], 'PNG', -1) if 'png' in filename[1] \
+            else self.curr_image.save(filename[0], 'JPG', -1)
+
 
 def clean_all():  # удаляет все ненужные записи из баз данных
     con = sqlite3.connect('YLdb_1.db')
@@ -416,10 +580,15 @@ def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
 
 
+def end():
+    sys.excepthook = except_hook
+    sys.exit(QApplication(sys.argv).exec())
+
+
 if __name__ == '__main__':
     sys.excepthook = except_hook
     app = QApplication(sys.argv)
-    ex = Photoshop()
+    ex = First()
     ex.show()
 
     app.exec()
