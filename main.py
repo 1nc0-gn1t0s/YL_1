@@ -17,11 +17,27 @@ class First(QMainWindow):
         uic.loadUi('YL_1.1.ui', self)
 
         self.StartButton.clicked.connect(self.start)
+        self.InstructionButton.clicked.connect(self.instruction)
 
     def start(self):
         self.ex = Photoshop()
         self.ex.show()
         self.close()
+
+    def instruction(self):
+        self.ex = Instruction()
+        self.ex.show()
+
+
+class Instruction(QMainWindow):
+    def __init__(self):
+        super(Instruction, self).__init__()
+
+        uic.loadUi('YL_1.2.ui', self)
+
+        with open ('instruction.txt', 'r') as file:
+            text = file.read()
+            self.PlaceForInstruction.setPlainText(text)
 
 
 class Photoshop(QMainWindow):
@@ -49,8 +65,7 @@ class Photoshop(QMainWindow):
 
         con = sqlite3.connect('YLdb_1.db')
         cursor = con.cursor()
-        cursor.execute('''INSERT INTO ColorSliders VALUES (0, 0, 'red'), (0, 0, 'green'), (0, 0, 'blue'),
-                          (0, 0, 'rotate'), (0, 0.05, 'contrast')''')
+        cursor.execute('''INSERT INTO ColorSliders VALUES (0, 0, 'red'), (0, 0, 'green'), (0, 0, 'blue')''')
         con.commit()
         con.close()
 

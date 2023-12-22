@@ -1,0 +1,10 @@
+Hi! This is a small instruction for the photo editor.
+
+You can see the main filters on the main page: rotate the photo 90 degrees clockwise or counterclockwise,
+a slider to change the visibility of the photo, filters to adjust brightness, sharpness and contrast, and a couple of black and white filters. There is a button at the bottom left of the page to save the resulting photo (nothing will
+be saved unless you click it and select the desired path). There are also buttons to cancel actions (one or all).
+
+All other filters are located on the second page. Three of them change the R, G and B parameters of the photo using sliders, the rest are "push-button". The name of the filter suggests what it is best used for.
+For example, the "forest" filter will look good in nature photos, and the "coloring" filter will make kind of a page looks like a page from the coloring book out of the photo. Remember that the intensity of the filter depends on the number of clicks on the button.
+
+That's it! Have fun editing photos :)
