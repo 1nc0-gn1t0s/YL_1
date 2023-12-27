@@ -10,7 +10,7 @@ from PIL import Image, ImageFilter, ImageEnhance
 from pillow_lut import load_cube_file
 
 
-class First(QMainWindow):  # Превьюшка со стартовым меню (можно прочитать инструкцию и/или открыть редактор
+class First(QMainWindow):  # превьюшка со стартовым меню (можно прочитать инструкцию и/или открыть редактор
     def __init__(self):
         super(First, self).__init__()
 
@@ -29,7 +29,7 @@ class First(QMainWindow):  # Превьюшка со стартовым меню
         self.ex.show()
 
 
-class Instruction(QMainWindow):  # Окно с текстом - инструкцией к программе
+class Instruction(QMainWindow):  # окно с текстом - инструкцией к программе
     def __init__(self):
         super(Instruction, self).__init__()
 
@@ -40,7 +40,7 @@ class Instruction(QMainWindow):  # Окно с текстом - инструкц
             self.PlaceForInstruction.setPlainText(text)
 
 
-class Photoshop(QMainWindow):  # Основное окно с редактором фотографий
+class Photoshop(QMainWindow):  # основное окно с редактором фотографий
     def __init__(self):
         super(Photoshop, self).__init__()
 
