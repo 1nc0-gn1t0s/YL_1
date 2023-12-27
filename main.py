@@ -10,7 +10,7 @@ from PIL import Image, ImageFilter, ImageEnhance
 from pillow_lut import load_cube_file
 
 
-class First(QMainWindow):
+class First(QMainWindow):  # Превьюшка со стартовым меню (можно прочитать инструкцию и/или открыть редактор
     def __init__(self):
         super(First, self).__init__()
 
@@ -29,18 +29,18 @@ class First(QMainWindow):
         self.ex.show()
 
 
-class Instruction(QMainWindow):
+class Instruction(QMainWindow):  # Окно с текстом - инструкцией к программе
     def __init__(self):
         super(Instruction, self).__init__()
 
         uic.loadUi('YL_1.2.ui', self)
 
-        with open ('instruction.txt', 'r') as file:
+        with open('instruction.txt', 'r', encoding="utf-8") as file:
             text = file.read()
             self.PlaceForInstruction.setPlainText(text)
 
 
-class Photoshop(QMainWindow):
+class Photoshop(QMainWindow):  # Основное окно с редактором фотографий
     def __init__(self):
         super(Photoshop, self).__init__()
 
