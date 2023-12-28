@@ -498,7 +498,7 @@ class Photoshop(QMainWindow):  # основное окно с редакторо
         try:
             self.pixmap = QPixmap.fromImage(self.last_images[-1])
             self.curr_image = self.last_images[-1].copy()
-            self.last_images = self.last_images[:-2]
+            self.last_images = self.last_images[:-1]
             self.picture1.setPixmap(self.pixmap)
             self.picture2.setPixmap(self.pixmap)
         except IndexError:
